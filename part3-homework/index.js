@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let phonebooks = 
 [
     { 
@@ -31,6 +33,15 @@ app.get('/', (request, response) => {
 
 app.get('/api/persons', (request, response) => {
     response.json(phonebooks)
+})
+
+app.get('/info', (request, response) => {
+  const time = new Date().toUTCString()
+  const length = phonebooks.length;
+  response.send(`<div>
+    <p>Phonebook has been send info for ${length} people</p>
+    <p>${time}</p>
+  </div>`)
 })
 
 const PORT = 3001
