@@ -36,14 +36,21 @@ app.get('/api/persons', (request, response) => {
   response.json(phonebooks)
 })
 
-app.get('/api/persons/:id', (request, response) => {
+// app.get('/api/persons/:id', (request, response) => {
+//   const id = Number(request.params.id)
+//   const phone = phonebooks.find(phone => phone.id === id)
+//   if(phone) {
+//     response.json(phone)
+//   } else {
+//     response.status(404).end()
+//   }
+// })
+
+app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
-  const phone = phonebooks.find(phone => phone.id === id)
-  if(phone) {
-    response.json(phone)
-  } else {
-    response.status(404).end()
-  }
+  phonebooks = phonebooks.filter(phone => phone.id !== id)
+
+  response.status(204).end()
 })
 
 app.get('/info', (request, response) => {
