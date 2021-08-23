@@ -1,3 +1,4 @@
+const { request, response } = require('express')
 const express = require('express')
 const app = express()
 
@@ -28,11 +29,21 @@ let phonebooks =
 ]
 
 app.get('/', (request, response) => {
-    response.send("<h1>Hello</h1>")
+  response.send("<h1>Hello</h1>")
 })
 
 app.get('/api/persons', (request, response) => {
-    response.json(phonebooks)
+  response.json(phonebooks)
+})
+
+app.get('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  const phone = phonebooks.find(phone => phone.id === id)
+  if(phone) {
+    response.json(phone)
+  } else {
+    response.status(404).end()
+  }
 })
 
 app.get('/info', (request, response) => {
