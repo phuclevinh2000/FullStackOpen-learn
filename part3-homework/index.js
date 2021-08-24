@@ -28,29 +28,28 @@ let phonebooks =
     }
 ]
 
-app.get('/', (request, response) => {
-  response.send("<h1>Hello</h1>")
-})
+//Function
+const generateId = () => {    //generate new ID base on max ID +1 
+  const maxId = phonebooks.length > 0
+  ? Math.max(...phonebooks.map(n => n.id))
+  : 0
 
+  return maxId + 1 
+}
+
+// GET method
 app.get('/api/persons', (request, response) => {
   response.json(phonebooks)
 })
 
-// app.get('/api/persons/:id', (request, response) => {
-//   const id = Number(request.params.id)
-//   const phone = phonebooks.find(phone => phone.id === id)
-//   if(phone) {
-//     response.json(phone)
-//   } else {
-//     response.status(404).end()
-//   }
-// })
-
-app.delete('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
-  phonebooks = phonebooks.filter(phone => phone.id !== id)
-
-  response.status(204).end()
+  const phone = phonebooks.find(phone => phone.id === id)
+  if(phone) {
+    response.json(phone)
+  } else {
+    response.status(404).end()
+  }
 })
 
 app.get('/info', (request, response) => {
@@ -60,6 +59,37 @@ app.get('/info', (request, response) => {
     <p>Phonebook has been send info for ${length} people</p>
     <p>${time}</p>
   </div>`)
+})
+
+
+// Delete method
+app.delete('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  phonebooks = phonebooks.filter(phone => phone.id !== id)
+
+  response.status(204).end()
+})
+
+
+// POST method
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+
+  if(!body.number) {
+    return response.status(400).json({
+      error: 'number missing'
+    })
+  }
+
+  const phone = {
+    "id": generateId(),
+    "name": body.name,
+    "number": body.number
+  }
+
+  phonebooks = phonebooks.concat(phone)
+
+  response.json(phone)
 })
 
 const PORT = 3001
