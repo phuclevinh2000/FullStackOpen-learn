@@ -75,18 +75,36 @@ app.delete('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
-  if(!body.number) {
+  //check error input
+  if(!body.number && body.name) {
     return response.status(400).json({
       error: 'number missing'
     })
+  } else if (!body.name && body.number) {
+    return response.status(400).json({
+      error: 'name missing'
+    })
+  } else if (!body.name && !body.number) {
+    return response.status(400).json({
+      error: 'name and number missing'
+    })
+  } 
+
+  const findName = phonebooks.find(phone => phone.name === body.name)
+  if(findName) {
+    return response.status(400).json({
+      error: 'name must be unique'
+    })
   }
 
+  //make new id and customer
   const phone = {
     "id": generateId(),
     "name": body.name,
     "number": body.number
   }
 
+  //add the new contact to the end of the current phonebooks
   phonebooks = phonebooks.concat(phone)
 
   response.json(phone)
