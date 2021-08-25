@@ -1,8 +1,17 @@
 const { request, response } = require('express')
 const express = require('express')
 const app = express()
+const morgan = require('morgan')
 
 app.use(express.json())
+
+morgan.token('data', (request, response) => {
+  if(request.method=='POST') 
+    return " " + JSON.stringify(request.body)
+  else return " "
+})
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
 
 let phonebooks = 
 [
@@ -38,6 +47,10 @@ const generateId = () => {    //generate new ID base on max ID +1
 }
 
 // GET method
+app.get('/', (request, response) => {
+  response.send('<h1>Part 3</h1>')
+})
+
 app.get('/api/persons', (request, response) => {
   response.json(phonebooks)
 })
